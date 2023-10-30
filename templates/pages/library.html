@@ -1,0 +1,89 @@
+{%  extends 'base.html' %}
+
+{% block content%} 
+<!--
+    This page is our main page that houses all the user information in one spot.
+    It has a form that allows new students to be added to the main deck of people. 
+    This page also has a button that references the StudInfo.html where they could pick a user to edit/delete. 
+-->
+<main>       
+    <section class="py-5 text-center container">
+      <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+          <h1 class="fw-light">LYCAN</h1>
+          <p class="lead text-muted">We are the IS CORE of 2022-2023, be proud and Learn Your Classmates And Names</p>
+          <p>
+            <a href="{% url 'flashcard' %}" class="btn btn-primary my-2">Study here</a>
+            <a href="#addStudent" class="btn btn-secondary my-2">Add yourself or another student</a>
+          </p>
+        </div>
+      </div>
+    </section>
+  
+    <div class="album py-5 bg-light">
+      <div class="container">
+  
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for student in our_students %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <img style="max-height:250px; object-fit: contain;" src="{{student.photo.url}}" alt="Could not find image"/>
+                        <div class="card-body">
+                            <p class="card-text">{{student.fName}} {{student.lName}}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a type="button" class="btn btn-sm btn-outline-secondary" href='{% url "studInfoPageView" stud_id=student.id %}'>Edit</a>
+                                </div>
+                                <small class="text-muted">Section Number {{student.sectionNum}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+</main>
+
+<br><br>
+<div style="padding: 4%; width: 50%;border: 1px solid; border-color: #adb5bd; margin: auto;">
+    <section style="display: flex; justify-content: center;">
+<form id = 'addStudent' action="{% url 'addStudent' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+    <H2 sty>Add A Student</H2>
+    <br>
+        <input type="text" class="form-control" name='firstName' placeholder="First Name">
+    </div>
+    <div class="mb-3">
+        <input type="text" class="form-control" name='lastName' placeholder="Last Name">
+    </div>
+    <div class="mb-3">
+        <input type="number" class="form-control" name='Section' placeholder="Section Number">
+    </div>
+    <div class="mb-3">
+        <input type="number" class="form-control" name='groupNum' placeholder="Group Number">
+    </div>
+    <div class="form-check">
+        <label for="male" class="form-check-label">Male&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input type="radio" class="form-check-input" name='gender' id='Male' value='M' checked><br>
+        <label for="female" class="form-check-label">Female&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input type="radio" class="form-check-input" name='gender' id='Female' value='F'>
+    </div><br>
+    <div class="mb-3">
+        <input type="text" class="form-control" name='funfact' class="btn btn-sm btn-outline-secondary" placeholder="Fun Fact">
+    </div>
+    <div class="mb-3">
+        <input type="file" class="form-control form-control-lg" name="photo" id="photofile" accept='image/png, image/jpeg' class="btn btn-sm btn-outline-secondary" required/>
+    </div>
+    <div class="input group mb-3">
+<span class="input-group-text">Feedback</span>
+        <textarea class="form-control" name='feedback' placeholder="Add Feedback"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+</section>
+</div>
+
+{% endblock %}

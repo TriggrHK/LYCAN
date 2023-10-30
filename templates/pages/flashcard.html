@@ -1,0 +1,123 @@
+{%  extends 'base.html' %}
+
+{% block content%}
+<!--
+  This is the flashcard page. It inherits from the base.html file and displays 'flashcards' for each student in the database
+  At the top we have a form which filters the students so you can search for someone or a specific group.
+  Below are the results with pictures that flip to reveal names and other information
+-->
+
+<br>
+<div style="padding: 4%; width: 50%;border: 1px solid; border-color: #adb5bd; margin: auto;">
+<section style="display: flex; justify-content: center;">
+  <!--This is the form that filters the data, it uses the 'filter' route-->
+  <form id = 'filterStudent' action="{% url 'filter' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+    <br>
+        <input type="text" class="form-control" name='firstName' placeholder="First Name">
+    </div>
+    <div class="mb-3">
+        <input type="text" class="form-control" name='lastName' placeholder="Last Name">
+    </div>
+    <div class="mb-3">
+        <input type="number" class="form-control" name='section' placeholder="Section Number">
+    </div>
+    <div class="mb-3">
+        <input type="number" class="form-control" name='group' placeholder="Group Number">
+    </div>
+    <div class="form-check">
+        <label for="male" class="form-check-label">Male&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input type="radio" class="form-check-input" name='gender' id='Male' value='M'><br>
+        <label for="female" class="form-check-label">Female&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input type="radio" class="form-check-input" name='gender' id='Female' value='F'>
+    </div><br>
+
+    <button type="submit" class="btn btn-primary">Apply Filter</button>
+</form>
+</section>
+</div>
+<!--Within this container is the for loop that loops through the data passed and displays a flash card-->
+<div class="container">
+  {% for student in our_students %}
+
+<div class="scene scene--card">
+    <div class="card">
+      <div class="card__face card__face--back shadow-lg" style="display: flex; flex-direction: column; justify-content:center; padding: 15px;">
+        {{student.fName}} {{student.lName}}<br>{{student.sectionNum}}-{{student.groupNum}}<br>
+        <div style="font-size: 15px;">
+        {% if student.funfact|length >= 85 %}
+        View the fun fact on the Edit Flashcard page
+        {% else %}
+        {{student.funfact}}
+        {% endif %}
+        </div>
+      </div>
+      <div class="card__face card__face--front shadow-lg" style="display: flex; flex-direction: column; justify-content:center;">
+        <img style="max-height:100%; object-fit: contain; max-width:100%;" src="{{student.photo.url}}" alt="Could not find image"/>
+      </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+<style>
+body { font-family: sans-serif; }
+.scene {
+  display: inline-block;
+  width: 400px;
+  height: 360px;
+  margin: 40px 0;
+  perspective: 600px;
+}
+
+
+.card {
+  border: none!important;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform-origin: center right;
+  transition: transform 1s;
+}
+
+.card.is-flipped {
+  transform: translateX(-100%) rotateY(-180deg);
+}
+
+.card__face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  line-height: 45px;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: 27px;
+  backface-visibility: hidden;
+  border: 1px solid grey;
+  border-radius: 4px;
+}
+
+.card__face--front {
+  background: white;
+
+}
+
+.card__face--back {
+  background: #0D6EFD;
+  opacity: 0.7;
+  transform: rotateY(180deg);
+}
+
+</style>
+  <script>var cards = document.querySelectorAll('.card');
+
+    [...cards].forEach((card)=>{
+      card.addEventListener('click', function() {
+        card.classList.toggle('is-flipped');
+      });
+    });</script>
+
+{% endblock %}

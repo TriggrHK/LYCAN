@@ -1,0 +1,66 @@
+{%  extends 'base.html' %}
+
+{% block content %}
+<!--
+    This is our form for adding, updating, or deleting students that are currently in our system. It shows all the information
+    that's needed for our database.
+-->
+<br>
+<div style="padding: 4%; width: 50%;border: 1px solid; border-color: #adb5bd; margin: auto;">
+    <section style="display: flex; justify-content: center;">
+        <form id = 'editStudent' action="{% url 'editStudent' %}" method="post" enctype="multipart/form-data">
+            <legend><h1 class="fw-light">{{student.fName}} {{student.lName}}</h1></legend>
+            {% csrf_token %}
+            <div class="mb-3">
+            <label for="firstName" class="form-label">First Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <input type="text" class="form-control" name='firstName'value="{{student.fName}}">
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <input type="text" class="form-control" name='lastName' value="{{student.lName}}">
+            </div>
+            <div class="mb-3">
+                <label for="Section"class="form-label">Section Number:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <input type="number" class="form-control" name='Section' value='{{student.sectionNum}}'>
+            </div>
+            <div class="mb-3">
+                <label for="groupNum" class="form-label">Group Number:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <input type="number" class="form-control" name='groupNum'value='{{student.groupNum}}'>
+            </div>
+            <div class="form-check">
+                <label for="male" class="form-check-label">Male&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <input type="radio" class="form-check-input" name='gender' id='Male' value='M' {% if student.gender == 'M' %}checked{% endif %}><br>
+                <label for="female" class="form-check-label">Female&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <input type="radio" class="form-check-input" name='gender' id='Female' value='F' {% if student.gender == 'F' %}checked{% endif %}>
+            </div><br>
+            <div class="mb-3">
+                <label for="funfact" class="form-label">Fun Fact:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <input type="text" class="form-control" name='funfact' class="btn btn-sm btn-outline-secondary" value='{{student.funfact}}'>
+            </div>
+            <div class="mb-3">
+                <div style="height: 200px; width:200px;">
+                    <img style="max-height: 100%;" src="{{student.photo.url}}"/>
+                </div>
+                <br/>
+                <label for="photo" class="form-label">Upload New photo:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <input type="file" class="form-control form-control-lg" name="photo" id="photofile" accept='image/png, image/jpeg' class="btn btn-sm btn-outline-secondary"/>
+            </div>
+            <div class="input group mb-3">
+                <label for="feedback" class="form-label">Have any feedback for us?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                <span class="input-group-text">Feedback</span>
+                <textarea class="form-control" name='feedback' value='{{student.feedback}}'></textarea>
+            </div>            
+            <div class="input group mb-3">
+                <input class="form-control" hidden name='id' value='{{student.id}}'></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button> 
+        </form>
+        <form action="{% url 'delStud' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Delete</button>
+            <input class="form-control" hidden name='id' value='{{student.id}}'></textarea>
+        </form>
+
+    </section>
+</div>
+{% endblock %}
